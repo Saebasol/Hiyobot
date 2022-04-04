@@ -45,7 +45,7 @@ class Component(ABC):
             if self._timeout <= 0:
                 break
 
-        hiyobot.compoents = {k: v for k, v in hiyobot.compoents.items() if v != self}
+        hiyobot.components = {k: v for k, v in hiyobot.components.items() if v != self}
 
     async def interaction_check(self, request: "HiyobotRequest") -> bool:
         return True
@@ -157,7 +157,7 @@ class HiyobotRequest(Request):
 
 class Hiyobot:
     commands: dict[str, RegisterdInfo] = {}
-    compoents: dict[str, Component] = {}
+    components: dict[str, Component] = {}
 
     def __init__(
         self,
@@ -187,7 +187,7 @@ class Hiyobot:
 
     def component_register(self, component: Component):
         for k in component.mapping.keys():
-            self.compoents[k] = component
+            self.components[k] = component
 
         if not component.start_check_timeout:
             create_task(component.timeout_manager(self))
@@ -268,8 +268,8 @@ class Hiyobot:
                 ComponentInteractionData, request.ctx.interaction.data
             )
             custom_id = interaction_data["custom_id"]
-            if custom_id in self.compoents:
-                await self.compoents[custom_id].execute(
+            if custom_id in self.components:
+                await self.components[custom_id].execute(
                     interaction_data["custom_id"], request
                 )
             else:
