@@ -22,12 +22,18 @@ embed.add_field(
     inline=False,
 )
 embed.add_field(
+    name="discord.py/types",
+    value="https://github.com/Rapptz/discord.py\nCopyright (c) Copyright (c) 2015-present Rapptz\n[MIT License](https://github.com/Rapptz/discord.py/blob/master/LICENSE)",
+)
+embed.add_field(
     name="Mintchoco",
     value="https://github.com/Saebasol/Mintchoco\nCopyright (c) 2021 Saebasol\n[MIT License](https://github.com/Saebasol/Mintchoco/blob/main/LICENSE)",
     inline=False,
 )
 
-license = RegisterCommand(name="license", description="")
+license = RegisterCommand(
+    name="license", description="Licenses for OSS used in Hiyobot"
+)
 
 
 @license.command(options=None)
