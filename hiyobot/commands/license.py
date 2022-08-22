@@ -1,29 +1,13 @@
-from hiyobot.discord.embeds import Embed
-from hiyobot.handler.app import HiyobotRequest
-from hiyobot.handler.register import RegisterCommand
+from discord.embeds import Embed
+from discord import Interaction, app_commands
 
 embed = Embed(
     title="OSS Notice",
     description="This project uses OSS (open source software) under the following licenses.",
 )
 embed.add_field(
-    name="aiohttp",
-    value="https://github.com/aio-libs/aiohttp\nCopyright aio-libs contributors.\n[Apache-2.0 License](https://github.com/aio-libs/aiohttp/blob/master/LICENSE.txt)",
-    inline=False,
-)
-embed.add_field(
-    name="pynacl",
-    value="https://github.com/pyca/pynacl\nCopyright pyca\n[Apache-2.0 License](https://github.com/pyca/pynacl/blob/main/LICENSE)",
-    inline=False,
-)
-embed.add_field(
-    name="sanic",
-    value="https://github.com/sanic-org/sanic\nCopyright (c) 2016-present Sanic Community\n[MIT License](https://github.com/sanic-org/sanic/blob/main/LICENSE)",
-    inline=False,
-)
-embed.add_field(
-    name="discord.py/types",
-    value="https://github.com/Rapptz/discord.py\nCopyright (c) Copyright (c) 2015-present Rapptz\n[MIT License](https://github.com/Rapptz/discord.py/blob/master/LICENSE)",
+    name="discord.py",
+    value="https://github.com/Rapptz/discord.py\nCopyright (c) 2015-present Rapptz\n[MIT License](https://github.com/Rapptz/discord.py/blob/master/LICENSE)",
 )
 embed.add_field(
     name="Mintchoco",
@@ -31,11 +15,10 @@ embed.add_field(
     inline=False,
 )
 
-license = RegisterCommand(
-    name="license", description="Licenses for OSS used in Hiyobot"
-)
 
-
-@license.command(options=None)
-async def show_license(request: HiyobotRequest):
-    return await request.ctx.response.send(embed=embed)
+@app_commands.command()
+async def license(interaction: Interaction) -> None:
+    """
+    Licenses for OSS used in Hiyobot
+    """
+    return await interaction.response.send_message(embed=embed)

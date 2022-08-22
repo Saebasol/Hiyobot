@@ -1,14 +1,21 @@
-from hiyobot.commands.hitomi import hitomi
-from hiyobot.commands.anekos import anekos
-from hiyobot.commands.license import license
-from hiyobot.handler.app import Hiyobot
+"""
+최종 진입점 입니다.
+"""
 
-bot = Hiyobot(
-    "client_public_key",
-    "bot_token",
-)
-bot.command_register(hitomi)
-bot.command_register(anekos)
-bot.command_register(license)
+from sys import argv
 
-bot.sanic.run("0.0.0.0", 8000)
+from hiyobot import create_client
+from hiyobot.argparser import parse_args
+from hiyobot.config import HiyobotConfig
+
+
+def main() -> None:
+    hiyobot_config = HiyobotConfig()
+    args = parse_args(argv[1:])
+    hiyobot_config.update_with_args(args)
+    client = create_client(hiyobot_config)
+    client.run()
+
+
+if __name__ == "__main__":
+    main()
