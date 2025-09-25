@@ -1,19 +1,21 @@
 """
 Hiyobot의 기본 베이스가 되는 클라이언트입니다.
 """
+
 from typing import Any
 
-from discord.client import Client
-from discord.object import Object
+from delphinium.client import Delphinium
 from discord.app_commands.tree import CommandTree
-from mintchoco.client import Mintchoco
+from discord.client import Client
+from discord.flags import Intents
+from discord.object import Object
+
 from hiyobot.config import HiyobotConfig
 from hiyobot.request import Request
-from discord.flags import Intents
 
 
 class Hiyobot(Client):
-    mintchoco: Mintchoco
+    delphinium: Delphinium
     request: Request
 
     def __init__(
@@ -22,13 +24,13 @@ class Hiyobot(Client):
         super().__init__(intents=intents, *args, **kwargs)
         self.tree = CommandTree(self)
         self.config = config
-        Hiyobot.mintchoco = Mintchoco()
-        Hiyobot.request = Request()
+        self.delphinium = Delphinium("https://heliotrope.saebasol.org")
 
     async def setup_hook(self):
         if self.config.PRODUCTION:
             await self.tree.sync()
         else:
+            self.tree.copy_global_to(guild=Object(self.config.TEST_GUILD_ID))
             await self.tree.sync(guild=Object(self.config.TEST_GUILD_ID))
 
     def run(self, *args: Any, **kwargs: Any) -> None:

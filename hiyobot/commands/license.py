@@ -1,5 +1,5 @@
-from discord.embeds import Embed
 from discord import Interaction, app_commands
+from discord.embeds import Embed
 
 embed = Embed(
     title="OSS Notice",
@@ -10,8 +10,8 @@ embed.add_field(
     value="https://github.com/Rapptz/discord.py\nCopyright (c) 2015-present Rapptz\n[MIT License](https://github.com/Rapptz/discord.py/blob/master/LICENSE)",
 )
 embed.add_field(
-    name="Mintchoco",
-    value="https://github.com/Saebasol/Mintchoco\nCopyright (c) 2021 Saebasol\n[MIT License](https://github.com/Saebasol/Mintchoco/blob/main/LICENSE)",
+    name="Delphinium",
+    value="https://github.com/Saebasol/Delphinium\nCopyright (c) 2021 Saebasol\n[MIT License](https://github.com/Saebasol/Delphinium/blob/main/LICENSE)",
     inline=False,
 )
 
@@ -21,4 +21,4 @@ async def license(interaction: Interaction) -> None:
     """
     Licenses for OSS used in Hiyobot
     """
-    return await interaction.response.send_message(embed=embed)
+    await interaction.response.send_message(embed=embed)
