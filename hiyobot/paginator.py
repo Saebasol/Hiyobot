@@ -1,9 +1,10 @@
 from typing import Optional
+
+from discord.embeds import Embed
 from discord.enums import ButtonStyle
 from discord.interactions import Interaction
 from discord.ui.button import button
 from discord.ui.view import View
-from discord.embeds import Embed
 
 
 class Paginator(View):
@@ -53,3 +54,4 @@ class Paginator(View):
         if message := interaction.message:
             self.stop()
             await message.delete()
+

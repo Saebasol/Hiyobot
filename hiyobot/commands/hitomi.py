@@ -3,6 +3,7 @@ from urllib.parse import quote
 from delphinium.entities.info import Info
 from discord import Interaction, app_commands
 from discord.embeds import Embed
+from discord.ui import Button
 
 from hiyobot.client import Hiyobot
 from hiyobot.paginator import Paginator
@@ -14,11 +15,11 @@ def make_embed_with_info(info: Info, thumbnail: str) -> Embed:
         title=info.title,
     )
     embed.set_thumbnail(
-        url=f"https://heliotrope.saebasol.org/api/proxy/{quote(thumbnail)}"
+        url=f"https://heliotrope.saebasol.org/api/proxy/{quote(thumbnail, safe='-_.!~*\'()')}"
     )
     embed.add_field(
         name="번호",
-        value=f"[{info.id}](https://hibiscus.saebasol.org/reader/{info.id})",
+        value=f"[{info.id}](https://hibiscus.saebasol.org/viewer/{info.id})",
         inline=False,
     )
     embed.add_field(
@@ -105,6 +106,8 @@ async def hitomi_list(
 
     paginator = Paginator(interaction.user.id, embeds)
 
+    paginator.add_item(Button(label="View On Saebasol/Hibiscus", url="https://hibiscus.saebasol.org"))
+
     return await interaction.followup.send(
         embed=embeds[0],
         view=paginator,
@@ -139,12 +142,14 @@ async def hitomi_viewer(
         page += 1
         embed = Embed()
         embed.set_image(
-            url=f"{interaction.client.delphinium.base_url}/proxy/{file.url}"
+            url=f"{interaction.client.delphinium.base_url}/api/proxy/{quote(file.url, safe='-_.!~*\'()')}"
         )
         embed.set_footer(text=f"{page}/{total}")
         embeds.append(embed)
 
     paginator = Paginator(interaction.user.id, embeds)
+
+    paginator.add_item(Button(label="View On Saebasol/Hibiscus", url=f"https://hibiscus.saebasol.org/viewer/{number}"))
 
     return await interaction.followup.send(
         embed=embeds[0],
