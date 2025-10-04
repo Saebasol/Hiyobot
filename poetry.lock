@@ -216,14 +216,14 @@ files = [
 
 [[package]]
 name = "delphinium"
-version = "1.4.1"
+version = "1.5.0"
 description = "Heliotrope wrapper (Python)"
 optional = false
 python-versions = "<4.0,>=3.13"
 groups = ["main"]
 files = [
-    {file = "delphinium-1.4.1-py3-none-any.whl", hash = "sha256:2df1c92d63cbe925c6727934019f528b8a4fb1c506bd132d052ffafe7f6bdaea"},
-    {file = "delphinium-1.4.1.tar.gz", hash = "sha256:6c21ba14d34c65bb3ba35d2dac75007d45c6c4b01909eb2746871b6a7bd780a4"},
+    {file = "delphinium-1.5.0-py3-none-any.whl", hash = "sha256:52bf54cca880c745e42071043a491b215c64b6e98797fcd00c0b23b35c82ebfc"},
+    {file = "delphinium-1.5.0.tar.gz", hash = "sha256:f8535267affb9b26498dbce5bc61a26ba67d13f9c5b323b1562f265bf892bff7"},
 ]
 
 [package.dependencies]

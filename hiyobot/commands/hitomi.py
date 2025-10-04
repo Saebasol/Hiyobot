@@ -1,5 +1,6 @@
 from urllib.parse import quote
 
+from delphinium.dtos.thumbnail import Size
 from delphinium.entities.info import Info
 from discord import Interaction, app_commands
 from discord.embeds import Embed
@@ -15,7 +16,7 @@ def make_embed_with_info(info: Info, thumbnail: str) -> Embed:
         title=info.title,
     )
     embed.set_thumbnail(
-        url=f"https://heliotrope.saebasol.org/api/proxy/{quote(thumbnail, safe='-_.!~*\'()')}"
+        url=f"https://heliotrope.saebasol.org/api/proxy/{quote(thumbnail, safe="-_.!~*'()")}"
     )
     embed.add_field(
         name="번호",
@@ -71,9 +72,11 @@ hitomi = app_commands.Group(
 async def hitomi_info(
     interaction: Interaction[Hiyobot], number: int, ephemeral: bool = False
 ) -> None:
-    info = await interaction.client.delphinium.info(number)
+    info = await interaction.client.delphinium.get_info(number)
     if info:
-        thumbnail = await interaction.client.delphinium.thumbnail(number, "smallbig")
+        thumbnail = await interaction.client.delphinium.get_thumbnail(
+            number, Size.SMALLBIG
+        )
         embed = make_embed_with_info(info, thumbnail[0].url)
         await interaction.response.send_message(embed=embed, ephemeral=ephemeral)
         return
@@ -94,19 +97,23 @@ async def hitomi_list(
     interaction: Interaction[Hiyobot], number: int, ephemeral: bool = False
 ) -> None:
     await interaction.response.defer()
-    infos, _ = await interaction.client.delphinium.list(number)
+    list_data = await interaction.client.delphinium.get_list(number)
 
     embeds = [
         make_embed_with_info(
             info,
-            (await interaction.client.delphinium.thumbnail(info.id, "smallbig"))[0].url,
+            (await interaction.client.delphinium.get_thumbnail(info.id, Size.SMALLBIG))[
+                0
+            ].url,
         )
-        for info in infos
+        for info in list_data.items
     ]
 
     paginator = Paginator(interaction.user.id, embeds)
 
-    paginator.add_item(Button(label="View On Saebasol/Hibiscus", url="https://hibiscus.saebasol.org"))
+    paginator.add_item(
+        Button(label="View On Saebasol/Hibiscus", url="https://hibiscus.saebasol.org")
+    )
 
     return await interaction.followup.send(
         embed=embeds[0],
@@ -127,7 +134,7 @@ async def hitomi_viewer(
 ) -> None:
     await interaction.response.defer()
 
-    images = await interaction.client.delphinium.image(number)
+    images = await interaction.client.delphinium.get_image(number)
 
     if not images:
         return await interaction.followup.send(
@@ -142,14 +149,19 @@ async def hitomi_viewer(
         page += 1
         embed = Embed()
         embed.set_image(
-            url=f"{interaction.client.delphinium.base_url}/api/proxy/{quote(file.url, safe='-_.!~*\'()')}"
+            url=f"{interaction.client.delphinium.http.base_url}/api/proxy/{quote(file.url, safe="-_.!~*'()")}"
         )
         embed.set_footer(text=f"{page}/{total}")
         embeds.append(embed)
 
     paginator = Paginator(interaction.user.id, embeds)
 
-    paginator.add_item(Button(label="View On Saebasol/Hibiscus", url=f"https://hibiscus.saebasol.org/viewer/{number}"))
+    paginator.add_item(
+        Button(
+            label="View On Saebasol/Hibiscus",
+            url=f"https://hibiscus.saebasol.org/viewer/{number}",
+        )
+    )
 
     return await interaction.followup.send(
         embed=embeds[0],
@@ -175,16 +187,18 @@ async def hitomi_search(
 ) -> None:
     await interaction.response.defer()
     querys = query.split(" ")
-    results, _ = await interaction.client.delphinium.search(querys, page)
-    if results:
+    search_results = await interaction.client.delphinium.post_search(querys, page)
+    if search_results:
         embeds = [
             make_embed_with_info(
                 info,
-                (await interaction.client.delphinium.thumbnail(info.id, "smallbig"))[
-                    0
-                ].url,
+                (
+                    await interaction.client.delphinium.get_thumbnail(
+                        info.id, Size.SMALLBIG
+                    )
+                )[0].url,
             )
-            for info in results
+            for info in search_results.result
         ]
 
         paginator = Paginator(interaction.user.id, embeds)
@@ -210,9 +224,11 @@ async def hitomi_random(
     interaction: Interaction[Hiyobot], query: str, ephemeral: bool = False
 ) -> None:
     await interaction.response.defer()
-    info = await interaction.client.delphinium.random(query.split(" "))
+    info = await interaction.client.delphinium.post_random(query.split(" "))
     if info:
-        thumbnail = await interaction.client.delphinium.thumbnail(info.id, "smallbig")
+        thumbnail = await interaction.client.delphinium.get_thumbnail(
+            info.id, Size.SMALLBIG
+        )
         embed = make_embed_with_info(info, thumbnail[0].url)
         await interaction.followup.send(embed=embed, ephemeral=ephemeral)
         return
