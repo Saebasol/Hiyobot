@@ -198,7 +198,7 @@ async def hitomi_search(
                     )
                 )[0].url,
             )
-            for info in search_results.result
+            for info in search_results.results
         ]
 
         paginator = Paginator(interaction.user.id, embeds)
